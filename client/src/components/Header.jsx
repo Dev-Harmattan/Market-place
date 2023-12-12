@@ -19,8 +19,8 @@ export default function () {
           />
           <FaSearch className="text-slate-600" />
         </form>
-        <ul className='flex gap-3'>
-          <Link to={'/'} >
+        <ul className="flex gap-3">
+          <Link to={'/'}>
             <li className="hidden sm:inline-block text-slate-700 hover:underline">
               Home
             </li>

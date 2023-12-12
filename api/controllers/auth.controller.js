@@ -7,8 +7,10 @@ export const auth = async (req, res, next) => {
     const hashPassword = await bcrypt.hash(password, 10);
     const user = new User({ username, email, password: hashPassword });
     await user.save();
-    res.json({ message: 'User saved successfully' });
+    return res
+      .status(201)
+      .json({ message: 'User saved successfully', success: true });
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
