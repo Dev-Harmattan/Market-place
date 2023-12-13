@@ -6,6 +6,11 @@ import { errorHandler } from '../util/errorHandler.js';
 export const signUp = async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
+    const existingUser = await User.findOne({ username });
+    if (existingUser?.email)
+      return next(
+        errorHandler(401, 'User with this credential already exists.')
+      );
     const hashPassword = await bcrypt.hash(password, 10);
     const user = new User({ username, email, password: hashPassword });
     await user.save();

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -31,16 +32,20 @@ export default function SignUp() {
       });
       const data = await response.json();
       if (!data?.success) {
+        toast('Something went wrong, Please check your credentials');
         setError(data.message);
         return;
       }
       setLoading(false);
       setError(null);
+      toast('Sign up successful');
       navigate('/sign-in');
-      console.log('Running');
       console.log(data);
     } catch (error) {
+      toast('Something went wrong! Please check your Credentials');
       setError(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -72,6 +77,7 @@ export default function SignUp() {
           onChange={inputChangeHandler}
           value={formData.password}
         />
+        {error && <div className="my-2 text-red-500 text-center">{error}</div>}
         <button
           disabled={loading}
           className="bg-slate-700 p-3 text-white uppercase hover:opacity-75 disabled:opacity-80 rounded-lg"
@@ -85,7 +91,6 @@ export default function SignUp() {
           <span className="text-blue-700 hover:underline">Sign in</span>
         </Link>
       </div>
-      {error && <div className="text-red-500">{error}</div>}
     </div>
   );
 }
