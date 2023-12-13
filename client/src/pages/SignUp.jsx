@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import OAuth from '../components/OAuth';
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -11,6 +12,7 @@ export default function SignUp() {
   });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  
 
   const inputChangeHandler = (e) => {
     setFormData((currenFormData) => ({
@@ -31,7 +33,7 @@ export default function SignUp() {
         body: JSON.stringify(formData),
       });
       const data = await response.json();
-      if (!data?.success) {
+      if (data?.success === false) {
         toast('Something went wrong, Please check your credentials');
         setError(data.message);
         return;
@@ -44,8 +46,6 @@ export default function SignUp() {
     } catch (error) {
       toast('Something went wrong! Please check your Credentials');
       setError(error.message);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -84,6 +84,7 @@ export default function SignUp() {
         >
           {loading ? 'Loading...' : 'Sign Up'}
         </button>
+        <OAuth />
       </form>
       <div className="flex gap-2 mt-5 justify-center">
         <p>Have an account ?</p>

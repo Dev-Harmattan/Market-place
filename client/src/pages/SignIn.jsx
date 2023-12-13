@@ -3,10 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  clearError,
   signInFailure,
   signInStart,
   signInSuccess,
 } from '../store/user/userSlice.js';
+import OAuth from '../components/OAuth.jsx';
 
 export default function SignIn() {
   const navigate = useNavigate();
@@ -18,6 +20,7 @@ export default function SignIn() {
   const { error, loading } = useSelector((state) => state.user);
 
   const inputChangeHandler = (e) => {
+    dispatch(clearError());
     setFormData((currenFormData) => ({
       ...currenFormData,
       [e.target.id]: e.target.value,
@@ -36,7 +39,7 @@ export default function SignIn() {
         body: JSON.stringify(formData),
       });
       const data = await response.json();
-      if (!data?.success) {
+      if (data?.success === false) {
         throw new Error(data.message);
       }
       dispatch(signInSuccess(data));
@@ -45,8 +48,6 @@ export default function SignIn() {
     } catch (error) {
       toast('Something went wrong! Please check your Credentials');
       dispatch(signInFailure(error.message));
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -77,6 +78,7 @@ export default function SignIn() {
         >
           {loading ? 'Loading...' : 'Sign In'}
         </button>
+        <OAuth />
       </form>
       <div className="flex gap-2 mt-5 justify-center">
         <p>Dont have an account ?</p>
