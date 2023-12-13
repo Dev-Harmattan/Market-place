@@ -1,18 +1,23 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  signInFailure,
+  signInStart,
+  signInSuccess,
+} from '../store/user/userSlice.js';
 
 export default function SignIn() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const { error, loading } = useSelector((state) => state.user);
 
   const inputChangeHandler = (e) => {
-    setError(null);
     setFormData((currenFormData) => ({
       ...currenFormData,
       [e.target.id]: e.target.value,
@@ -21,8 +26,7 @@ export default function SignIn() {
 
   const formSubmitHandler = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
+    dispatch(signInStart());
     try {
       const response = await fetch('/api/auth/sign-in', {
         method: 'POST',
@@ -33,14 +37,14 @@ export default function SignIn() {
       });
       const data = await response.json();
       if (!data?.success) {
-        throw new Error('Wrong Credentials');
+        throw new Error(data.message);
       }
-      setLoading(false);
+      dispatch(signInSuccess(data));
       toast('Sign in successful');
       navigate('/home');
     } catch (error) {
       toast('Something went wrong! Please check your Credentials');
-      setError(error.message);
+      dispatch(signInFailure(error.message));
     } finally {
       setLoading(false);
     }
