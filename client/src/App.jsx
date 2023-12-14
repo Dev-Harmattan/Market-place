@@ -11,8 +11,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Provider } from 'react-redux';
 import { store, persistor } from './store/store.js';
 import { PersistGate } from 'redux-persist/integration/react';
+import PrivateRoute from './components/PrivateRoute';
 
 export default function App() {
+
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
@@ -23,7 +25,9 @@ export default function App() {
             <Route path="/sign-in" element={<SignIn />} />
             <Route path="/sign-up" element={<SignUp />} />
             <Route path="/about" element={<About />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route element={<PrivateRoute />}>
+              <Route path="/profile" element={<Profile />} />
+            </Route>
           </Routes>
           <ToastContainer />
         </BrowserRouter>
